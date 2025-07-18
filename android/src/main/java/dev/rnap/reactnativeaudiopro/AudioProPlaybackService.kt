@@ -286,7 +286,18 @@ open class AudioProPlaybackService : MediaLibraryService() {
 					//)
 					.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 					.setAutoCancel(true)
-					.also { builder -> getBackStackedActivity()?.let { builder.setContentIntent(it) } }
+					.setContentIntent(
+                        PendingIntent.getActivity(
+                            this@AudioProPlaybackService,
+                            0,
+                            Intent(this@AudioProPlaybackService, MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                action = Intent.ACTION_MAIN
+                                addCategory(Intent.CATEGORY_LAUNCHER)
+                            },
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                    )
 			notificationManagerCompat.notify(NOTIFICATION_ID, builder.build())
 		}
 	}
